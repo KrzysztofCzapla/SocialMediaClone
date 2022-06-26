@@ -1,0 +1,16 @@
+{% extends "app/base.html" %}
+
+{%block content %}
+{% load crispy_forms_tags %}
+
+	<form method="POST" class="form-group box" style="padding: 20; font-family: Tahoma; display:block;
+    margin-left: auto;
+    margin-right: auto">
+		<h1>Register</h1>
+		{%csrf_token%}
+		{{form|crispy}}
+		<button type="submit" class="btn">
+			Register
+		</button>
+	</form>
+{%endblock%}

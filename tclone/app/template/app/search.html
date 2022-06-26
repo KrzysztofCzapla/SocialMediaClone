@@ -1,0 +1,286 @@
+{% extends 'app/base.html' %}
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+
+<h1 style=" display: flex; justify-content: center; " class="">Search for: "{{searched}}"</h1>
+<div style=" display: flex;  justify-content: center;">
+<div style="   justify-content: center; margin: 10" class="box">
+	<h1 style="  justify-content: center; " class="">Users</h1>
+	{% for user in users %}
+	<div style=" ">
+
+		<a href="/profile/{{user.user.username}}" style="background-color: white; box-shadow: none"><img src="{{ user.profile_img.url }}" class="img-responsive postimage"style="width: 70; height: 70; vertical-align: middle; " /></a>
+
+		<h5 style=" justify-content: center; display: flex;" >{{user.name}} @{{user.user.username}}</h5></div>
+					    		
+					
+
+			    		
+
+			    		
+	{% endfor %}
+</div>
+</div>
+<div style=" display: flex;  justify-content: center;">
+<div style="   justify-content: center; margin: 10" class="">
+	<h1 style="  justify-content: center; text-align: center;" class="">Posts</h1>
+	{%for post in posts%}
+
+
+
+		    			{% if post.author in profileOfRequest.following.all  %}
+				    	<div class="postform posts" name="followed1" style="margin-left: 0;">
+				    		
+				    	{% else %}
+				    	
+				    	<div class="postform posts notfollowed1" style="margin-left: 0;" name="notfollowed1" style="display:block;">
+				    		
+				    	{% endif %}	
+
+				    		<div style="display: inline-block;">
+
+								<a href="/profile/{{post.author.user.username}}"><img src="{{ post.author.profile_img.url }}" class="img-responsive postimage"style="width: 70; height: 70; vertical-align: middle; " /></a>
+				    		
+				    		</div>
+
+					    	<div style="display: inline-block; margin-top: auto; margin-bottom: 10;vertical-align: middle;">
+
+					    		<h6>{{post.date}}</h6>
+
+					    		<h5 >{{post.author.name}} @{{post.author.user.username}}</h5>
+						    	
+						    	<h4 style="max-width: 300px;">	
+									{{ post.text }}
+								</h4>
+
+							</div>
+
+						<div>
+							
+									
+					    	{% if profileOfRequest in post.likers.all  %}
+					    		
+					    		<input type="button" style="color: #a0d9f8" id="{{post.id}}" name="Liked" value="&#10084; {{post.total_likes}}"  class="like button like-btn{{post.id}}" />
+
+					    	{% else %}
+
+					    		<input type="button" style="color: white" id="{{post.id}}" name="NotLiked" value="&#10084; {{post.total_likes}}"  class="like button like-btn{{post.id}}" />
+
+					    	{% endif %}
+
+					    	{% if post.author.user != profileOfRequest.user %}
+
+						    	{% if profileOfRequest in post.sharers.all  %}
+						    		
+						    		<input type="button" id="Shared" name="{{post.id}}" value="&#9735; {{post.total_sharers}}"  class="share button share-btn{{post.id}}" style="margin-left: 20;color: #a0d9f8" />
+
+						    	{% else %}
+
+						    		<input type="button" id="NotShared" name="{{post.id}}" value="&#9735; {{post.total_sharers}}"  class="fa fa-share-alt share button share-btn{{post.id}}" style="margin-left: 20" />
+
+						    	{% endif %}
+
+					    	{% else %}
+
+						    	{% if profileOfRequest in post.sharers.all  %}
+						    		
+						    		<input disabled="disabled" type="button" id="Shared" name="{{post.id}}" value="&#9735; {{post.total_sharers}}"  class="share button share-btn{{post.id}}" style="margin-left: 20;color: #a0d9f8" />
+
+						    	{% else %}
+
+						    		<input disabled="disabled" type="button" id="NotShared" name="{{post.id}}" value="&#9735; {{post.total_sharers}}"  class="fa fa-share-alt share button share-btn{{post.id}}" style="margin-left: 20" />
+
+						    	{% endif %}
+
+
+					   		{% endif %}
+
+					   		<input type="button" id="NotShown" name="{{post.id}}n" value="... {{post.total_comments}}"  class="comment button" style="margin-left: 20" />
+
+				   		</div>	
+					
+						<div class="comments" style="display: none; padding-left: 20" name="{{post.id}}ncom">
+							
+						   
+					    	{% for comment in comments %}
+
+					    		{% if comment.post == post %}
+
+					    		<div style="display: inline-block;">
+
+							    	<div style="display: inline-block;  margin-top:20">
+
+										<a href="/profile/{{comment.author.user.username}}"><img src="{{ comment.author.profile_img.url }}" class="img-responsive postimage"style="width: 60; height: 60; vertical-align: middle; " /></a>
+						    		
+						    		</div>
+
+							    	<div style="display: inline-block; margin-top: auto; margin-bottom: 10;vertical-align: middle;">
+
+							    		<h6 style="font-size:11">{{comment.date}}</h6>
+
+							    		<h5 style="font-size:15">{{comment.author.name}} @{{comment.author.user.username}}</h5>
+								    	
+								    	<h4 style="max-width: 300px;font-size:14">	
+											{{ comment.text }}
+										</h4>
+
+									</div>
+
+								</div>
+
+								{% endif%}
+
+							{%endfor%}
+
+
+
+					    </div>
+					</div>
+				{%endfor%}
+
+				    </div>
+				</div>		
+
+			    		
+
+			    		
+
+</div>
+</div>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+					$('.like').click(function(){
+
+
+							const post_id = $(this).attr('id')
+                			
+			                
+			                let trim = $(this).attr('name')
+			                
+			                let res;
+			                const likes = $(this).attr('value').slice(2);
+			                var trimCount = parseInt(likes)
+			                //alert(likes)
+					    $.ajax({
+					             type: "POST",
+					             url: "/like/",
+					             data: {'content_id': $(this).attr('id'),'csrfmiddlewaretoken': '{{ csrf_token }}'},
+					             dataType: "json",
+					             success: function(response) {
+					             	 //document.getElementById(post_id).value = 2;
+						              if(trim === 'Liked') {
+			                            //alert()
+			                            res = trimCount - 1
+			                            trim = 'NotLiked'
+			                            trimCount = res
+			                            document.getElementById(post_id).value = 	"\u2764 "+res;  
+			                           	document.getElementById(post_id).name = trim; 
+			                            document.getElementById(post_id).style.color = "white";  
+			                        } else {
+			                            trim = 'Liked'
+			                            res = trimCount + 1
+			                            trimCount = res
+			                           	document.getElementById(post_id).value = 	"\u2764 "+res; 
+			                           	document.getElementById(post_id).name = trim;
+			                           	document.getElementById(post_id).style.color = "#a0d9f8";  
+			                        }
+			                        //alert(trim); &#9735;
+			                        
+
+					              }
+
+					        });
+
+					})
+				}); 
+			</script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+					$('.share').click(function(){
+
+
+							let trim = $(this).attr('id')
+                	
+			                
+			                let post_id = $(this).attr('name')
+			                
+			                let res;
+			                const shares = $(this).attr('value').slice(2);
+			                var trimCount = parseInt(shares)
+					    $.ajax({
+					             type: "POST",
+					             url: "/share/",
+					             data: {'content_id': $(this).attr('name'),'csrfmiddlewaretoken': '{{ csrf_token }}'},
+					             dataType: "json",
+					             success: function(response) {
+					             	//
+					             	 //document.getElementById(post_id).value = 2;
+						              if(trim === 'Shared') {
+			                            //alert()
+			                            res = trimCount - 1
+			                            trim = 'NotShared'
+			                            trimCount = res
+			                             	document.getElementsByName(post_id)[0].value = "\u2607 "+res; 
+			                           		document.getElementsByName(post_id)[0].id = trim;  
+			                           		document.getElementsByName(post_id)[0].style.color = "white"; 
+			                            
+			                        } else {
+			                        	//alert()
+			                            trim = 'Shared'
+			                            res = trimCount + 1
+			                            trimCount = res
+			                          	 	document.getElementsByName(post_id)[0].value = "\u2607 "+res; 
+			                           		document.getElementsByName(post_id)[0].id = trim;
+			                           		document.getElementsByName(post_id)[0].style.color = "#a0d9f8";  
+			                        }
+			                        alert(value);
+			                        
+
+					              }
+
+					        });
+
+					})
+				});
+			</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+					$('.comment').click(function(){
+
+
+							let trim = $(this).attr('id')
+                	
+			                let commentsection = $(this).attr('name')+"com"
+			               	let name = $(this).attr('name')
+
+
+			                if(trim === 'Shown') {
+			                            //alert()
+			                            	trim = 'NotShown'
+			                             	document.getElementsByName(commentsection)[0].style.display = 'none';
+			                             document.getElementsByName(name)[0].id = trim;
+			                           		
+			                            
+			                        } else {
+			                        	//alert()
+			                            trim = 'Shown'
+			                            document.getElementsByName(commentsection)[0].style.display = 'block';
+			                          document.getElementsByName(name)[0].id = trim;
+			                            
+			                        }
+			                
+					   
+
+					})
+				});
+			</script>
+			{% endblock %}

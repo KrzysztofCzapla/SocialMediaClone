@@ -1,0 +1,275 @@
+
+<html>
+<head>
+	<title>T-Clone</title>
+	<style type="text/css">
+		body{
+			
+			margin: 0;
+			background: greywhite;
+			font-weight: 300;
+			font-family: Tahoma;
+
+		}
+		.container{
+			
+			width: 80%;
+			margin: 0 auto;
+
+		}
+		header{
+			background: #1DA1F2;
+		}
+		header::after{
+			content: '';
+			display: table;
+			clear: both;
+		}
+		nav{
+			float: right;
+
+		}
+		nav ul{
+			margin:  0;
+			padding: 0;
+			padding-bottom: 10;
+			list-style: none;
+
+		}
+		nav li{
+			display: inline-block;
+			margin-left: 70;
+			padding-top: 23;
+			position: relative;
+		}
+		nav a{
+			color: white;
+			text-decoration: none;
+			text-transform: uppercase;
+			font-size: 14;
+
+		}
+		nav a:hover{
+			color: antiquewhite;
+		}
+		nav a::before{
+			content: '';
+			display: block;
+			height: 3px;
+			
+			background-color:antiquewhite;
+
+			position: absolute;
+
+			top: 0;
+			width: 0%;
+			transition: all ease-in-out 250ms;
+		}
+		nav a:hover::before{
+			width: 100%;
+		}
+		.box{
+			
+			text-align: center;
+			width: 15%;
+			max-width: 25%;
+			
+			
+			
+			margin: 100px;
+			
+			
+
+			
+			background: rgba( 255, 255, 255, 0.1 );
+			box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+			backdrop-filter: blur( 20px );
+			-webkit-backdrop-filter: blur( 20px );
+			border-radius: 10px;
+			border: 1px solid rgba( 255, 255, 255, 0.18 );
+			
+			
+			
+
+
+		}
+		.text{
+			border-radius: 10px;
+			border: 2px solid rgba( 0,0,0,0.8 );
+			background: rgba( 255, 255, 255, 0.1 );
+
+		}
+		.box h1,h2{
+			font-family: Tahoma;
+			margin: 0;
+
+		}
+		.box h2{
+			font-size: 20;
+			margin-top: 10;
+		}
+		.img-responsive{
+			border-radius: 10;
+			box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+			backdrop-filter: blur( 20px );
+			border: 0px solid rgba( 255, 255, 255, 0.18 );
+			border-radius: 30px;
+			margin: 5;
+			width: 120px;
+			height: 120px;
+			margin-bottom: 0;
+
+		}
+		.box button, .button{
+			background: #1DA1F2;
+			box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+			backdrop-filter: blur( 20px );
+			-webkit-backdrop-filter: blur( 20px );
+			border-radius: 10px;
+			border: 1px solid rgba( 255, 255, 255, 0.18 );
+			font-family: Tahoma;
+			color: white;
+			padding: 8;
+			font-size: 15;
+			margin-bottom: 10;
+			padding-left: 30;
+			padding-right: 30;
+			
+
+		}
+		.box a{
+
+			font:  15px Tahoma;
+			  text-decoration: none;
+			  background-color: #1DA1F2;
+			  color: white;
+			  padding: 10;
+			  padding-left: 30;
+			  padding-right: 30;
+			  margin: 10;
+			 box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+			  border: 1px solid rgba( 255, 255, 255, 0.18 );
+			  -webkit-backdrop-filter: blur( 20px );
+			  border-radius: 10px;
+			  margin-bottom: 50px;
+		}
+		
+
+		.inline, .box{
+			display: inline-block;
+			vertical-align:top;
+		}
+
+		.postform{
+
+			background: rgba( 255, 255, 255, 0.1 );
+			box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+			backdrop-filter: blur( 20px );
+			-webkit-backdrop-filter: blur( 20px );
+			border-radius: 10px;
+			border: 1px solid rgba( 255, 255, 255, 0.18 );
+			margin-left: 100;
+			margin-right: auto;
+			
+			margin-top: 50;
+			
+			<!-- display: inline-block; -->
+			 padding: 20;
+			  font-family: Tahoma;
+			   
+			    font-size: 20;
+
+
+
+		}
+		.text{
+			width: 200;
+			height: 100;
+			margin-bottom: auto;
+		}
+
+		.posts{
+
+			padding: 20;
+			width: 400;
+			padding-top: 10;
+		}
+		.postimage{
+			border-radius: 30px;
+			margin: 10;
+			text-align: left;
+		}
+		h5{
+			text-align: left;
+			margin: 0;
+			font-weight: bold;
+			font-size: 18;
+			
+		}
+		h4{
+			text-align: left;
+			margin-top: 10;
+			font-size: 15;
+
+		}
+		h6{
+			display: inline-block;
+			margin: 0;
+			text-align: left;
+			font-size: 11;
+			margin-bottom: 10;
+		}
+
+		.middle {
+			margin-left: auto;
+			 margin-right:auto;
+		}
+		
+		.controls ul{
+			display:none
+		}
+		.help-block, .alert{
+			color: darkred;
+		}
+		
+	</style>
+</head>
+<body>
+	<header>
+	<div class="container">
+	<nav>
+		<div class="" style="margin:0; display: inline-block;  text-align: center; margin-right:42">	
+			<form style="margin:0" action="/search"  method = "GET">
+			
+				<input type="search" name="searched" class="" style="border-radius: 10px;
+			border: 2px solid rgba( 0,0,0,0.8 );" placeholder=" search users and posts"  >
+				<button type="submit" class="button" style="margin: 0; background: white; color:#1DA1F2; padding: 5;
+				padding-top: 0; padding-bottom: 0;">🔎︎</button>
+
+			</form>
+		</div>
+		<ul style="display: inline-block;">
+
+			<li style="padding: 0;"></li>
+			<li><a href="/">Feed</a></li>
+			
+			<li><a href="/profile/{{user.username}}">Profile</a></li>
+			<li><a href="/options">Options</a></li>
+			{%if user.is_authenticated %}
+				<li><a href="/logout" style="">Logout</a></li>
+				
+			{%else%}
+				<li><a href="/login" style="">Login</a></li>
+			{% endif %}
+			
+		</ul>	
+	</nav>
+	</div>
+	</header>
+
+	<div class="main">
+		{% block content %}
+		{% endblock %}
+	</div>
+</body>	
+</html>

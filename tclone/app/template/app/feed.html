@@ -1,0 +1,359 @@
+{% extends 'app/base.html' %}
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+	
+	
+	<div style="">
+
+	
+		
+
+		
+			
+		<div class="middle" style="display:inline-block;vertical-align: top;margin-left: 650;">
+			<form method = "post" enctype="multipart/form-data" class="postform" style="padding: 10; margin-top: 100;">
+			        
+			        {% csrf_token %}
+
+			        
+
+			        <div style="display: inline-block; vertical-align:top; margin:10; margin-top: 25;">
+
+							<img src="{{ user.profile.profile_img.url }}" class="img-responsive postimage"style="width: 70; height: 70; vertical-align: middle; " />
+			    		
+			    		</div>
+
+			    	<div style="display: inline-block; text-align:center;">
+			        
+			        {{ postform.as_p }}
+
+			        <button name="post" type="submit" class="button">Tweet</button>
+			        </div>
+			        
+		    	</form>
+
+	    	
+	    	
+	    	
+	    	
+	    	{%for post in posts%}
+
+
+
+		    			{% if post.author in profileOfRequest.following.all  %}
+				    	<div class="postform posts" name="followed1">
+				    		
+				    	{% else %}
+				    	
+				    	<div class="postform posts notfollowed1" name="notfollowed1" style="display:block;">
+				    		
+				    	{% endif %}	
+
+				    		<div style="display: inline-block;">
+
+								<a href="/profile/{{post.author.user.username}}"><img src="{{ post.author.profile_img.url }}" class="img-responsive postimage"style="width: 70; height: 70; vertical-align: middle; " /></a>
+				    		
+				    		</div>
+
+					    	<div style="display: inline-block; margin-top: auto; margin-bottom: 10;vertical-align: middle;">
+
+					    		<h6>{{post.date}}</h6>
+
+					    		<h5 >{{post.author.name}} @{{post.author.user.username}}</h5>
+						    	
+						    	<h4 style="max-width: 300px;">	
+									{{ post.text }}
+								</h4>
+
+							</div>
+
+						<div>
+							
+									
+					    	{% if profileOfRequest in post.likers.all  %}
+					    		
+					    		<input type="button" style="color: #a0d9f8" id="{{post.id}}" name="Liked" value="&#10084; {{post.total_likes}}"  class="like button like-btn{{post.id}}" />
+
+					    	{% else %}
+
+					    		<input type="button" style="color: white" id="{{post.id}}" name="NotLiked" value="&#10084; {{post.total_likes}}"  class="like button like-btn{{post.id}}" />
+
+					    	{% endif %}
+
+					    	{% if post.author.user != profileOfRequest.user %}
+
+						    	{% if profileOfRequest in post.sharers.all  %}
+						    		
+						    		<input type="button" id="Shared" name="{{post.id}}" value="&#9735; {{post.total_sharers}}"  class="share button share-btn{{post.id}}" style="margin-left: 20;color: #a0d9f8" />
+
+						    	{% else %}
+
+						    		<input type="button" id="NotShared" name="{{post.id}}" value="&#9735; {{post.total_sharers}}"  class="fa fa-share-alt share button share-btn{{post.id}}" style="margin-left: 20" />
+
+						    	{% endif %}
+
+					    	{% else %}
+
+						    	{% if profileOfRequest in post.sharers.all  %}
+						    		
+						    		<input disabled="disabled" type="button" id="Shared" name="{{post.id}}" value="&#9735; {{post.total_sharers}}"  class="share button share-btn{{post.id}}" style="margin-left: 20;color: #a0d9f8" />
+
+						    	{% else %}
+
+						    		<input disabled="disabled" type="button" id="NotShared" name="{{post.id}}" value="&#9735; {{post.total_sharers}}"  class="fa fa-share-alt share button share-btn{{post.id}}" style="margin-left: 20" />
+
+						    	{% endif %}
+
+
+					   		{% endif %}
+
+					   		<input type="button" id="NotShown" name="{{post.id}}n" value="... {{post.total_comments}}"  class="comment button" style="margin-left: 20" />
+
+				   		</div>	
+					
+						<div class="comments" style="display: none; padding-left: 20" name="{{post.id}}ncom">
+							<div style="display: inline-block;vertical-align: top; margin-top:30">
+
+								<img src="{{ user.profile.profile_img.url }}" class="img-responsive postimage"style="width: 60; height: 60;  " />
+				    		
+				    		</div>
+						   	<form method = "post" enctype="multipart/form-data" name="2" class="1 image" style="display: inline-block; text-align: center; max-width: ;">
+						        
+						        {% csrf_token %}
+						        
+						        {{ commentform.as_p }}
+						        <input type="hidden" name="post_id" value={{post.id}}>
+						        
+						        <input  class="button" name="{{ post.id }}" id='{{ post.id }}' value="Submit" type="submit"/>
+						        
+					    	</form>
+					    	{% for comment in comments %}
+
+					    		{% if comment.post == post %}
+
+					    		<div style="display: inline-block;">
+
+							    	<div style="display: inline-block;  margin-top:20">
+
+										<a href="/profile/{{comment.author.user.username}}"><img src="{{ comment.author.profile_img.url }}" class="img-responsive postimage"style="width: 60; height: 60; vertical-align: middle; " /></a>
+						    		
+						    		</div>
+
+							    	<div style="display: inline-block; margin-top: auto; margin-bottom: 10;vertical-align: middle;">
+
+							    		<h6 style="font-size:11">{{comment.date}}</h6>
+
+							    		<h5 style="font-size:15">{{comment.author.name}} @{{comment.author.user.username}}</h5>
+								    	
+								    	<h4 style="max-width: 300px;font-size:14">	
+											{{ comment.text }}
+										</h4>
+
+									</div>
+
+								</div>
+
+								{% endif%}
+
+							{%endfor%}
+
+
+
+					    </div>
+					</div>
+				{%endfor%}
+	    </div>
+	    <div style=" ;display:inline-block; vertical-align: top; margin-top: 100; padding: 0; text-align:left;" >
+	    	<div class="box" style="display: block; width: 100%; margin: 00; margin-bottom: 50; margin-left: 50; max-width: 100%;">
+		    	<h2 style="margin:10; margin-bottom:20; font-size:25">Posts</h2>
+		    	<h2 ><input type="button" style="color: #a0d9f8" id="" name="All" value="All"  class="button all" />
+		    		 <input type="button" style="color: white" id="" name="Followed" value="Followed Only"  class="button fonly" /></h2>
+	    	</div>
+	    	
+	   		<div style="display: block;  width: 100%; margin: 10; margin-left: 50; max-width: 100%;" class="box">
+	    		<h2 style="margin:10; margin-bottom:20; font-size:25">Most active users</h2>
+	    		{% for active_user in active_users %}
+		    		<div style="">
+
+						<a href="/profile/{{active_user.user.username}}" style="background-color: white; box-shadow: none"><img src="{{ active_user.profile_img.url }}" class="img-responsive postimage"style="width: 70; height: 70; vertical-align: middle; " /></a>
+					    		
+					</div>
+
+			    	<div style="display: inline-block; margin-top: auto; margin-bottom: 10;vertical-align: middle;">
+
+			    		
+
+			    		<h5 >{{active_user.name}} @{{active_user.user.username}}</h5>
+				    	
+				    	
+
+					</div>
+
+	    		{%endfor%}
+	    	</div>
+	    
+	    </div>
+    </div>
+	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+					$('.like').click(function(){
+
+
+							const post_id = $(this).attr('id')
+                			
+			                
+			                let trim = $(this).attr('name')
+			                
+			                let res;
+			                const likes = $(this).attr('value').slice(2);
+			                var trimCount = parseInt(likes)
+			                //alert(likes)
+					    $.ajax({
+					             type: "POST",
+					             url: "/like/",
+					             data: {'content_id': $(this).attr('id'),'csrfmiddlewaretoken': '{{ csrf_token }}'},
+					             dataType: "json",
+					             success: function(response) {
+					             	 //document.getElementById(post_id).value = 2;
+						              if(trim === 'Liked') {
+			                            //alert()
+			                            res = trimCount - 1
+			                            trim = 'NotLiked'
+			                            trimCount = res
+			                            document.getElementById(post_id).value = 	"\u2764 "+res;  
+			                           	document.getElementById(post_id).name = trim; 
+			                            document.getElementById(post_id).style.color = "white";  
+			                        } else {
+			                            trim = 'Liked'
+			                            res = trimCount + 1
+			                            trimCount = res
+			                           	document.getElementById(post_id).value = 	"\u2764 "+res; 
+			                           	document.getElementById(post_id).name = trim;
+			                           	document.getElementById(post_id).style.color = "#a0d9f8";  
+			                        }
+			                        //alert(trim); &#9735;
+			                        
+
+					              }
+
+					        });
+
+					})
+				}); 
+			</script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+					$('.share').click(function(){
+
+
+							let trim = $(this).attr('id')
+                	
+			                
+			                let post_id = $(this).attr('name')
+			                
+			                let res;
+			                const shares = $(this).attr('value').slice(2);
+			                var trimCount = parseInt(shares)
+					    $.ajax({
+					             type: "POST",
+					             url: "/share/",
+					             data: {'content_id': $(this).attr('name'),'csrfmiddlewaretoken': '{{ csrf_token }}'},
+					             dataType: "json",
+					             success: function(response) {
+					             	//
+					             	 //document.getElementById(post_id).value = 2;
+						              if(trim === 'Shared') {
+			                            //alert()
+			                            res = trimCount - 1
+			                            trim = 'NotShared'
+			                            trimCount = res
+			                             	document.getElementsByName(post_id)[0].value = "\u2607 "+res; 
+			                           		document.getElementsByName(post_id)[0].id = trim;  
+			                           		document.getElementsByName(post_id)[0].style.color = "white"; 
+			                            
+			                        } else {
+			                        	//alert()
+			                            trim = 'Shared'
+			                            res = trimCount + 1
+			                            trimCount = res
+			                          	 	document.getElementsByName(post_id)[0].value = "\u2607 "+res; 
+			                           		document.getElementsByName(post_id)[0].id = trim;
+			                           		document.getElementsByName(post_id)[0].style.color = "#a0d9f8";  
+			                        }
+			                        alert(value);
+			                        
+
+					              }
+
+					        });
+
+					})
+				});
+			</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+					$('.comment').click(function(){
+
+
+							let trim = $(this).attr('id')
+                	
+			                let commentsection = $(this).attr('name')+"com"
+			               	let name = $(this).attr('name')
+
+
+			                if(trim === 'Shown') {
+			                            //alert()
+			                            	trim = 'NotShown'
+			                             	document.getElementsByName(commentsection)[0].style.display = 'none';
+			                             document.getElementsByName(name)[0].id = trim;
+			                           		
+			                            
+			                        } else {
+			                        	//alert()
+			                            trim = 'Shown'
+			                            document.getElementsByName(commentsection)[0].style.display = 'block';
+			                          document.getElementsByName(name)[0].id = trim;
+			                            
+			                        }
+			                
+					   
+
+					})
+				});
+			</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript">
+		$(document).ready(function() {
+					$('.all').click(function(){
+
+
+							$('.notfollowed1').show();
+							$('.all').css('color','#a0d9f8');	
+							$('.fonly').css('color','white');				                
+			                
+					    
+
+					})
+					$('.fonly').click(function(){
+
+
+							$('.notfollowed1').hide();
+							$('.fonly').css('color','#a0d9f8');		                
+			                $('.all').css('color','white');
+					    
+
+					})
+				});
+			</script>
+{% endblock %}
+
+
