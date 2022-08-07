@@ -1,7 +1,7 @@
 Uses:
  - Django
  - HTML, CSS, Javascript
- - Jquery
+ - JQuery
  
  In This App You Can:
   - Make Account
