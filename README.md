@@ -14,6 +14,8 @@ Uses:
   - Follow accounts, to show their posts on main page
   - Show all posts/Show followed only
  
+ Main Page
 ![alt text](https://github.com/KrzysztofCzapla/SocialMediaClone/blob/main/1.png)
 
+Profile Page
 ![alt text](https://github.com/KrzysztofCzapla/SocialMediaClone/blob/main/2.png)
