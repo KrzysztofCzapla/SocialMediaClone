@@ -13,6 +13,7 @@ class ProfileEditForm(forms.ModelForm):
 		fields = ['name','bio','profile_img']
 		initial=123
 
+
 class PostForm(forms.ModelForm): 
 	text = forms.CharField(label='')
 	text.widget.attrs.update({'class': 'text'})
@@ -24,6 +25,7 @@ class PostForm(forms.ModelForm):
 		exclude = ['author', 'likers', 'sharers','date']
 		auto_id = False
 
+
 class CommentForm(forms.ModelForm): 
 	text = forms.CharField(label='')
 	text.widget.attrs.update({'class': 'text'})
@@ -34,9 +36,10 @@ class CommentForm(forms.ModelForm):
 		fields ="__all__"
 		exclude = ['author','date','post']
 		auto_id = False
+		
+
 class NewUserForm(UserCreationForm):
 	
-
 	class Meta:
 		model = User
 		fields = ("username", "password1", "password2")

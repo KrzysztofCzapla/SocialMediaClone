@@ -26,6 +26,8 @@ class Post(models.Model):
 	likers = models.ManyToManyField(Profile,related_name='likers',default=author)
 	sharers = models.ManyToManyField(Profile,related_name='sharers',default=author)
 
+
+	# making properties
 	@property
 	def total_comments(self):
 		return self.postc.all().count()

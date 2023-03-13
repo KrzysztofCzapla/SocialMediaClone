@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
@@ -16,47 +16,42 @@ from django.db.models import Count
 from django.db.models.functions import Lower
 @login_required
 def feed(request):
+	# get all posts by date
 	posts = Post.objects.all().order_by('-date')
-	postform = PostForm()
-	
-
-	profileOfRequest = Profile.objects.get_or_create(
-	user=request.user)[0]
+	# get comments
 	comments = Comment.objects.all()
 
+	postform = PostForm()
 	commentform = CommentForm()
-
-
-	active_users = sorted(Profile.objects.all(), key=lambda t: t.total_posts, reverse=True)[:3]
-	#active_users = Profile.objects.annotate(total_posts=Count('votes')).order_by('total_posts')
 	
+	# get profile of logged in user
+	profileOfRequest = Profile.objects.get_or_create(
+	user=request.user)[0]
 
+	# getting 3 top active users
+	active_users = sorted(Profile.objects.all(), key=lambda t: t.total_posts, reverse=True)[:3]
+	
 	if request.method == 'POST':
-
+		# Detect AJAX
 		if request.is_ajax():
 			print("AJAX HERE")
 		else:
+			# Detect Comment Form
 			if 'post' not in request.POST:
 				commentform = CommentForm(request.POST)
 				
-
 				if commentform.is_valid():
-					name = request.POST.get('name')
-
-
-					
 					commentform.save(commit=False)
 					commentform.instance.author = profileOfRequest
 					commentform.instance.post = Post.objects.filter(id=request.POST.get('post_id'))[0]
-
-					print(Post.objects.filter(id=request.POST.get('post_id'))[0])
-
 					commentform.save()
+					# after saving reset form
 					commentform = CommentForm()
 					context = {"commentform": commentform,  "postform": postform, "posts": posts, "profileOfRequest": profileOfRequest, "comments": comments, "active_users": active_users}
 					
 					return HttpResponseRedirect(reverse('app:feed'))
-	
+
+			# Detect Post Form
 			else:
 				postform = PostForm(request.POST)
 				
@@ -80,19 +75,27 @@ def feed(request):
 
 @login_required
 def profile(request, profileWho):
-	user1 = User.objects.all().filter(username=profileWho)
+	# get the user of profile that youre looking at
+	UserOfThisProfile = User.objects.all().filter(username=profileWho)
 
-	profile = Profile.objects.get_or_create(
-	user=user1[0])
+	# get the profile of said user
+	profileOfThisPage = Profile.objects.get_or_create(
+	user=UserOfThisProfile[0])
 
+	# get user thats logged in
 	profileOfRequest = Profile.objects.get_or_create(
 	user=request.user)[0]
-	
-	profile2 = Profile.objects.filter(user=user1[0])
+	# Get the profile
+	profileOfThisPage = Profile.objects.filter(user=UserOfThisProfile[0])
+
 	postform = PostForm()
-	posts = Post.objects.filter(author=profile2[0])
-	posts2 = Post.objects.filter(sharers=profile2[0])
-	posts = posts.union(posts2).order_by('-date')
+
+	# Get his posts
+	posts = Post.objects.filter(author=profileOfThisPage[0])
+	# Get posts he shared
+	postsShared = Post.objects.filter(sharers=profileOfThisPage[0])
+	# Combine both
+	posts = posts.union(postsShared).order_by('-date')
 	comments = Comment.objects.all()
 
 	commentform = CommentForm()
@@ -106,81 +109,74 @@ def profile(request, profileWho):
 				
 
 				if commentform.is_valid():
-					name = request.POST.get('name')
-
-
-					
 					commentform.save(commit=False)
 					commentform.instance.author = profileOfRequest
 					commentform.instance.post = Post.objects.filter(id=request.POST.get('post_id'))[0]
-
-					print(Post.objects.filter(id=request.POST.get('post_id'))[0])
-
 					commentform.save()
 					commentform = CommentForm()
-					context = {"profile2":profile2,"commentform": commentform,  "postform": postform, "posts": posts, "profileOfRequest": profileOfRequest, "comments": comments}
+
+					context = {"profileOfThisPage":profileOfThisPage,"commentform": commentform,  "postform": postform, "posts": posts, "profileOfRequest": profileOfRequest, "comments": comments}
 					
-					return HttpResponseRedirect(reverse('app:profile', kwargs={'profileWho':user1[0].username}))
+					return HttpResponseRedirect(reverse('app:profile', kwargs={'profileWho':UserOfThisProfile[0].username}))
 	
 			else:
 				postform = PostForm(request.POST)
 				
-
 				if postform.is_valid():
 					postform.save(commit=False)
-					postform.instance.author = profile2[0]
+					postform.instance.author = profileOfThisPage[0]
 					
 					postform.save()
 					postform = PostForm()
-					context = {"profile2":profile2,"commentform": commentform,  "postform": postform, "posts": posts, "profileOfRequest": profileOfRequest, "comments": comments}
-					return HttpResponseRedirect(reverse('app:profile', kwargs={'profileWho':user1[0].username}))
+					context = {"profileOfThisPage":profileOfThisPage,"commentform": commentform,  "postform": postform, "posts": posts, "profileOfRequest": profileOfRequest, "comments": comments}
+					
+					return HttpResponseRedirect(reverse('app:profile', kwargs={'profileWho':UserOfThisProfile[0].username}))
 	else:
 		postform = PostForm()
 		commentform = CommentForm()
 
-	context = {"profile2":profile2,"commentform": commentform,  "postform": postform, "posts": posts, "profileOfRequest": profileOfRequest, "comments": comments}	
+	context = {"profileOfThisPage":profileOfThisPage,"commentform": commentform,  "postform": postform, "posts": posts, "profileOfRequest": profileOfRequest, "comments": comments}	
 
 	return render(request, 'app/profile.html',context)
-
-	
   
 @login_required
 def edit(request, profileWho):
-	user1 = User.objects.all().filter(username=profileWho)
+	# Get the page's user
+	UserOfThisProfile = User.objects.all().filter(username=profileWho)
 
+	# Get his profile
 	profile = Profile.objects.get_or_create(
-	user=user1[0])
-	
-	profile2 = Profile.objects.filter(user=user1[0])
+	user=UserOfThisProfile[0])
+
+	# Get request user
 	edit = Profile.objects.get(user=request.user)
 	form = ProfileEditForm(instance=edit)
 
   
 	if request.method == 'POST':
 		form = ProfileEditForm(request.POST, request.FILES, instance=edit)
-		
 
 		if form.is_valid():
 			form.save()
-			return HttpResponseRedirect(reverse('app:profile', kwargs={'profileWho':user1[0].username}))
+			return HttpResponseRedirect(reverse('app:profile', kwargs={'profileWho':UserOfThisProfile[0].username}))
 	else:
 		form = ProfileEditForm()
 	return render(request, 'app/image.html', {'form' : form})
 
 @login_required
 def search(request):
-	
+	# get profile of logged in
 	profileOfRequest = Profile.objects.get(user=request.user) 
-	posts = Post.objects.filter(text__contains=1)
-	users = Profile.objects.filter(name__contains=1)
-	comments = Comment.objects.all()
+	# create objects filter for context variable
+	posts = None
+	users = None
+	comments = None
 	searched = 0
 	context = {"posts": posts, "profileOfRequest": profileOfRequest, "comments": comments,"users":users,"searched":searched}
 	if request.method == 'GET':
 		searched = request.GET.get('searched')
 		print(searched)
 		if searched:
-			a=1
 			posts = Post.objects.filter(text__contains=searched)
 			users = Profile.objects.filter(name__contains=searched)
 
@@ -193,7 +189,7 @@ def search(request):
 
 def settings(request):
 	
-	
+
 
 	context = {}
 
@@ -271,7 +267,7 @@ def follow(request):
 
 
 
-	
+	# just to throw in something
 	ctx = {'hehe': 1}
 
 
